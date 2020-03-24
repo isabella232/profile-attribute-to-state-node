@@ -12,7 +12,7 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2018 David Luna.
+ * Copyright 2018-2020 David Luna.
  *
  */
 
@@ -21,18 +21,13 @@ package com.luna.authentication;
 import com.google.inject.assistedinject.Assisted;
 import com.iplanet.sso.SSOException;
 import com.sun.identity.idm.AMIdentity;
-import com.sun.identity.idm.AMIdentityRepository;
 import com.sun.identity.idm.IdRepoException;
-import com.sun.identity.idm.IdSearchControl;
-import com.sun.identity.idm.IdSearchResults;
-import com.sun.identity.idm.IdType;
+import com.sun.identity.idm.IdUtils;
 import com.sun.identity.sm.RequiredValueValidator;
 
 import org.forgerock.json.JsonValue;
 import org.forgerock.openam.annotations.sm.Attribute;
 import org.forgerock.openam.auth.node.api.*;
-import org.forgerock.openam.core.CoreWrapper;
-import org.forgerock.openam.utils.CrestQuery;
 
 import javax.inject.Inject;
 
@@ -51,7 +46,6 @@ import java.util.Set;
 public class ProfileAttributeToStateNode extends SingleOutcomeNode {
 
     private final Config config;
-    private final CoreWrapper coreWrapper;
 
     /**
      * Configuration for the node.
@@ -68,13 +62,11 @@ public class ProfileAttributeToStateNode extends SingleOutcomeNode {
      * Create the node.
      *
      * @param config The service config.
-     * @param coreWrapper The coreWrapper.
      * @throws NodeProcessException If the configuration was not valid.
      */
     @Inject
-    public ProfileAttributeToStateNode(@Assisted Config config, CoreWrapper coreWrapper) throws NodeProcessException {
+    public ProfileAttributeToStateNode(@Assisted Config config) {
         this.config = config;
-        this.coreWrapper = coreWrapper;
     }
 
     @Override
@@ -129,15 +121,8 @@ public class ProfileAttributeToStateNode extends SingleOutcomeNode {
         return user.getAttribute(key);
     }
 
-    private AMIdentity getIdentity(String username, String realm) throws IdRepoException, SSOException {
-        AMIdentityRepository idrepo = coreWrapper.getAMIdentityRepository(
-                coreWrapper.convertRealmNameToOrgName(realm));
-        IdSearchControl idSearchControl = new IdSearchControl();
-        idSearchControl.setAllReturnAttributes(true);
-
-        IdSearchResults idSearchResults = idrepo.searchIdentities(IdType.USER,
-                new CrestQuery(username), idSearchControl);
-        return (AMIdentity) idSearchResults.getSearchResults().iterator().next();
+    private AMIdentity getIdentity(String username, String realm) {
+        return IdUtils.getIdentity(username, realm);
     }
 
     /**

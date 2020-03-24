@@ -12,11 +12,11 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2017 ForgeRock AS.
- * Portions copyright 2018 David Luna.
+ * Portions copyright 2018-2020 David Luna.
 -->
 # Profile Attribute To State Node
 
-A simple authentication node for ForgeRock's [Identity Platform][forgerock_platform] 5.5 and above. This node can be used to pull information from a (previously identified in the authentication tree) user's profile into the shared authentication state for easy reference by subsequent nodes in the tree.
+A simple authentication node for ForgeRock's [Identity Platform][forgerock_platform] 6.5.0.1 and above. This node can be used to pull information from a (previously identified in the authentication tree) user's profile into the shared authentication state for easy reference by subsequent nodes in the tree.
 
 As values returned from a profile's attributes are returned as Sets, this node offers various ways to select the element(s) from that Set, determined by the choice of **selection type** parameter. 
 
